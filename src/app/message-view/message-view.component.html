@@ -1,0 +1,5 @@
+<div class="msg-container">
+  <div *ngFor="let message of messages" class="mb-3 msg-line" [ngClass]="username === message.sender ? 'right' : 'left'">
+    <app-message [sender]="message.sender" [timestamp]="message.timestamp" [body]="message.body"></app-message>
+  </div>
+</div>
