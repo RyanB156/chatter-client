@@ -39,7 +39,7 @@ export class Message {
   timestamp: Date;
   body: string;
 
-  constructor(sender, receiver, timestamp, body) {
+  constructor(sender: string, receiver: string, timestamp: Date, body: string) {
     this.sender = sender;
     this.receiver = receiver;
     this.timestamp = timestamp;

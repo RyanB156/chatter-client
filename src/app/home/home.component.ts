@@ -8,39 +8,23 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  
+  conversations: string[] = [];
 
-  username: string = 'A';
-  friendUsername: string = 'B';
-  messageBody: string = '';
-  private millisPerMinute = 60_000;
-
-  messages: Message[] = [];
-
-  baseMessages: Message[] = [
-    new Message('A', 'B', new Date(Date.now() - 10 * this.millisPerMinute), 'Hi! How are you doing?'),
-    new Message('B', 'A', new Date(Date.now() - 9 * this.millisPerMinute), 'Hey. I am doing well, how about you?'),
-    new Message('A', 'B', new Date(Date.now() - 5 * this.millisPerMinute), 'Good'),
-    new Message('A', 'B', new Date(Date.now() - 0.5 * this.millisPerMinute), 'Whatcha been up to?'),
-    new Message('B', 'A', new Date(Date.now() - 0.25 * this.millisPerMinute), 'I graduated from school with my Bachelor\'s in Computer Science and I just started a job with Honeywell in Raleigh, NC. Everything is going well so far. It\'s good to be starting my career.'),
-  ];
-
-  constructor(private http: HttpClient) { 
-
-  }
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    console.log(`Subscribing: ${this.username}, ${this.friendUsername}`);
-    this.http.get<Message[]>(`https://localhost:1443/messages/?conversation=${this.username}-${this.friendUsername}`).subscribe(data => {
-      this.messages = [];
-      data.forEach(message => {
-        message.timestamp = new Date(message['timestamp']);
-        this.messages.push(message);
-      })
-    });
-  }
+    this.http.get<Message[]>(`https://localhost:1443/messages/all`, {observe: 'response'})
+    .subscribe(response => {
+      console.log(response);
+      if (response.status === 200) {
+        console.log(response['body']);
+        for (let key in response['body']) {
+          this.conversations.push(key);
+        }
+      }
+    }, error => console.log(error));
 
-  buttonClick(): void {
-    this.ngOnInit();
   }
 
 }

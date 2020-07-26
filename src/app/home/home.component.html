@@ -1,23 +1,6 @@
 
-<div class="row">
-  <label for="p1">Username</label>
-  <input type="text" id="p1" class="dark" [(ngModel)]="username">
-  <label for="p2">Friend's Username</label>
-  <input type="text" id="p2" class="dark" [(ngModel)]="friendUsername">
+<p>Home works!</p>
 
-  <button type="button" class="dark" (click)="buttonClick()">Refresh</button>
-</div>
-
-<div class="row">
-  <p>Conversation between {{ username }} and {{ friendUsername }}</p>
-</div>
-
-<div class="row">
-  <div class="mt-3">
-    <app-message-view [messages]="messages" [username]="username"></app-message-view>
-  </div>
-</div>
-
-<div class="msg-canvas row justify-content-center">
-  <textarea class="dark" [(ngModel)]="messageBody" rows="4" cols="50"></textarea>
+<div class="dark" *ngFor="let conversationCode of conversations">
+  <a class="h5" href="/conversation/{{ conversationCode }}">{{ conversationCode }}</a>
 </div>
