@@ -1,1 +1,45 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+$message-background: rgb(75, 75, 75);
+
+nav.nav-dark, nav *.nav-dark {
+  background-color: black;
+  color: white;
+}
+
+.msg-background {
+  background-color: $message-background;
+}
+
+.dark {
+  background-color: rgb(32, 32, 32);
+  color: white;
+}
+
+a.nav-dark {
+  color: white;
+}
+
+a.nav-dark:hover {
+  color: rgb(206, 206, 206);
+}
+
+input.dark {
+  border-radius: 5px;
+  border-style: ridge;
+}
+
+label, input.dark, button.dark {
+  margin-left: 8px;
+}
+
+button.dark {
+  border-radius: 5px;
+  border-style: double;
+}
+
+button.dark:hover {
+  background-color: rgb(53, 53, 53);
+  color: rgb(206, 206, 206);
+}
