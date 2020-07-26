@@ -12,8 +12,8 @@ export class ConversationViewComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
-  username: string = 'A';
-  friendUsername: string = 'B';
+  username: string = '';
+  friendUsername: string = '';
   messageBody: string = '';
 
   messages: Message[] = [];
@@ -37,6 +37,9 @@ export class ConversationViewComponent implements OnInit {
 
   ngOnInit(): void {
     let conversation: string = this.route.snapshot.paramMap.get('conversation');
+    let participants = conversation.split('-');
+    this.username = participants[0];
+    this.friendUsername = participants[1];
     this.messages = [];
     this.http.get<Message[]>(`https://localhost:1443/messages/${conversation}`, {observe: 'response'})
     .subscribe(response => {
