@@ -1,0 +1,43 @@
+
+<div class="login-register">
+  <div *ngIf="isLoggingIn">
+    <div class="h4 text-center">Login</div>
+    <div class="row">
+      <div class="col">
+        <label for="username">Username</label>
+        <input type="text" class="dark" id="username" [(ngModel)]="username">
+      </div>
+      <div class="col">
+        <label for="password">Password</label>
+        <input type="password" class="dark" id="password" [(ngModel)]="password">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="btn-link dark" href="#" (click)="createAccount()">Create an account</button>
+      </div>
+      <div class="col">
+        <button type="button" class="dark" (click)="login()">Submit</button>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="!isLoggingIn">
+    <div class="h4 text-center">Register</div>
+    <div class="row">
+      <div class="col">
+        <label for="username">Username</label>
+        <input type="text" class="dark" id="username" [(ngModel)]="username">
+      </div>
+      <div class="col">
+        <label for="password">Password</label>
+        <input type="password" class="dark" id="password" [(ngModel)]="password">
+      </div>
+    </div>
+    <div>
+      <div>
+        <button type="button" class="dark" (click)="login()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
