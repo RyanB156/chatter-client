@@ -14,11 +14,15 @@
     </div>
     <div class="row">
       <div class="col">
-        <button class="btn-link dark" href="#" (click)="createAccount()">Create an account</button>
+        <button class="btn-link dark" (click)="createAccount()">Create an account</button>
       </div>
       <div class="col">
         <button type="button" class="dark" (click)="login()">Submit</button>
       </div>
+    </div>
+    <div *ngIf="isLoginError">
+      <p class="text-danger">Unable to log you in</p>
+      <p class="text-danger">Either the username or password you entered is incorrect</p>
     </div>
   </div>
   
@@ -36,8 +40,11 @@
     </div>
     <div>
       <div>
-        <button type="button" class="dark" (click)="login()">Submit</button>
+        <button type="button" class="dark" (click)="register()">Submit</button>
       </div>
+    </div>
+    <div *ngIf="isRegisterError">
+      <p class="text-danger">A user with that username already exists</p>
     </div>
   </div>
 </div>

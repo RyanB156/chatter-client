@@ -27,8 +27,7 @@ export class ConversationViewComponent implements OnInit {
       let message = new Message(this.username, this.friendUsername, new Date(Date.now()), this.messageBody);
       console.log(`Sending ${JSON.stringify(message)}`);
 
-      this.http.post(
-        `https://localhost:1443/messages/add`, message).subscribe(data => {
+      this.http.post(`https://localhost:1443/messages/add`, message).subscribe(data => {
           console.log(data);
         });
       this.messageBody = '';

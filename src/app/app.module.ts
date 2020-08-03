@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { MessageComponent } from './message/message.component';
 import { MessageViewComponent } from './message-view/message-view.component';
 import { ConversationViewComponent } from './conversation-view/conversation-view.component';
+import { LoginRegisterComponent } from './login-register/login-register.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ConversationViewComponent } from './conversation-view/conversation-view
     MessageComponent,
     MessageViewComponent,
     ConversationViewComponent,
+    LoginRegisterComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Message } from '../message/message.component';
 import { HttpClient } from '@angular/common/http';
+import { KeyManager } from '../domain/security/key-manager';
 
 @Component({
   selector: 'app-home',
@@ -10,10 +11,12 @@ import { HttpClient } from '@angular/common/http';
 export class HomeComponent implements OnInit {
   
   conversations: string[] = [];
+  loginData: string = '';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+
     this.http.get<Message[]>(`https://localhost:1443/messages/all`, {observe: 'response'})
     .subscribe(response => {
       console.log(response);
