@@ -3,13 +3,18 @@
   <div *ngIf="isLoggingIn">
     <div class="h4 text-center">Login</div>
     <div class="row">
-      <div class="col">
+      <div class="col-md-4 col-sm-12">
         <label for="username">Username</label>
         <input type="text" class="dark" id="username" [(ngModel)]="username">
       </div>
-      <div class="col">
+      <div class="col-md-4 col-sm-12">
         <label for="password">Password</label>
         <input type="password" class="dark" id="password" [(ngModel)]="password">
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <label for="privateKey">Private Key</label>
+        <input type="text" class="dark" id="privateKey" [(ngModel)]="privateKey" #privateKeyInput>
+        <button class="dark" (click)="copyPrivateKey(privateKeyInput)" value="click to copy">Copy private key</button>
       </div>
     </div>
     <div class="row">
@@ -18,6 +23,11 @@
       </div>
       <div class="col">
         <button type="button" class="dark" (click)="login()">Submit</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <p class="text-danger">Make sure your private key is the one you were assigned when you registered. Keep it in a safe place.</p>
       </div>
     </div>
     <div *ngIf="isLoginError">
