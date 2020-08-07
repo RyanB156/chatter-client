@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Message } from '../message/message.component';
 import { HttpClient } from '@angular/common/http';
 import { KeyManager } from '../domain/security/key-manager';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -11,11 +12,15 @@ import { KeyManager } from '../domain/security/key-manager';
 export class HomeComponent implements OnInit {
   
   conversations: string[] = [];
-  loginData: string = '';
+  loginData: string = localStorage['username'];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
+
+    if (localStorage['isLoggedIn'] != 'true') {
+      this.router.navigateByUrl('connect/login');
+    }
 
     this.http.get<Message[]>(`https://localhost:1443/messages/all`, {observe: 'response'})
     .subscribe(response => {

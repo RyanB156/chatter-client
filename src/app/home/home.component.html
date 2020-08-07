@@ -1,8 +1,17 @@
 
-<p>Home works!</p>
+<p>Welcome {{ loginData }}</p>
 
-<p>{{ loginData }}</p>
+<div>
+  <button class="dark">New Conversation</button>
+</div>
 
-<div class="dark" *ngFor="let conversationCode of conversations">
-  <a class="h5" href="/conversation/{{ conversationCode }}">{{ conversationCode }}</a>
+<div>
+  Start conversations
+  ...<br>
+  <div class="dark" *ngFor="let conversationCode of conversations">
+    <a class="h5" href="/conversation/{{ conversationCode }}">{{ conversationCode }}</a>
+  </div>
+  <br>
+  ...
+  End conversations
 </div>

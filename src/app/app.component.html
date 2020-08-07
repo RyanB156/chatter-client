@@ -5,9 +5,12 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link nav-dark mb-1 pb-1 mt-auto" href="/home">Home</a>
-      <a class="nav-item nav-link nav-dark" href="/connect/login">Login</a>
-      <a class="nav-item nav-link nav-dark" href="/connect/register">Register</a>
+      <a class="nav-item nav-link nav-dark mb-1 pb-1 mt-auto mr-0" href="/home">Home</a>
+      <span *ngIf="isLoggedIn" class="nav-item mb-1 pb-1 mt-auto mr-2 ml-2">{{ username }}</span>
+      <button *ngIf="isLoggedIn" class="dark nav-item mb-0 pb-1 mt-auto" (click)="logout()">Logout</button>
+      <a *ngIf="!isLoggedIn" class="nav-item nav-link nav-dark ml-0" href="/connect/login">Login</a>
+      <a *ngIf="!isLoggedIn" class="nav-item nav-link nav-dark" href="/connect/register">Register</a>
+      
     </div>
   </div>
 </nav>

@@ -38,6 +38,12 @@ export class LoginRegisterComponent implements OnInit {
   }
 
   /*
+    Test users:
+      username: A, password: 1234
+      username: B, password: 1234
+  */
+
+  /*
     TODO:
 
     documentation comments
@@ -52,39 +58,75 @@ export class LoginRegisterComponent implements OnInit {
       Server checks password hash against the existing user with that username √
       Server generates random session key for the user, returns it and the user's public key, and tells the user they are logged in √
       Client saves session key. Also save current username in local storage. √
-      -> Home
+      => Home
+
+    Logout
+      User clicks "Logout" √
+      Client sets localStorage['isLogged'in] to 'false' √
+      Client navigates to Login √
+      Client updates menu bar to reflect signin status √
 
     Register - User clicks on "Register" and enters information to create an account. Then login.
-      User enters username
-      User enters password
+      User enters username √
+      User enters password √
       Client creates public and private keys √
       Send username, H(password), and public key to Server √
       Save private key in local storage and inform the user that they need to save it √
       -> Login
 
     View list of conversations - User navigates to Home and sees a list of conversations for the current user
-      User is signed in
-      User clicks on "Home"
+      User is signed in √
+      User clicks on "Home" if not there already √
       Client submits access request with username and session key
       Server checks the session key against the username (Don't trust the client saying it is logged in)
-      If logged in, Server admits the request and returns the list of conversations. Else, return error
+      If logged in, Server admits the request and returns the list of conversations which contains. Else, return error
       Client displays the conversations to the user
 
-    View messages in a conversation - User clicks on an active conversation from Home and sees all messages in that conversation
-      User is signed in and at Home, view a list of conversations
+    Start view of messages in a conversation - User clicks on an active conversation from Home and sees all messages in that conversation
+      User is signed in and at Home, viewing a list of conversations
       User clicks on a conversation
-      Client requests all messages from the conversation from Server, with username and session key
-      Server validates request
-      Server returns all messages in the conversation
-      Client displays messages in a nice format
+      -> View messages in a conversation
       
+    View messages in a conversation
+      Client requests all User decryptable messages under the current conversationID
+      Server validates request
+      Server returns all User decryptable messages under the current conversationID
+      Client decrypts all User decryptable messages
+      Client displays messages in a nice format
 
       (conversation also stores the participants' public keys)
 
-    Create a new conversation - User clicks on "New Conversation"
+    Create a new conversation - User clicks on "New Conversation" and starts communicating with another user
+      User is signed in
+      User clicks on "Home" if not there already
+      User clicks on "New Conversation"
+      Client navigates to CreateNewConversation
+      User enters a recipient username
+      User clicks "Search"
+      Client sends username to Server
+      Server checks if the username matches an existing user. If not, notify Client of the error.
+      Server creates new empty conversation and saves it
+      Server sends empty conversation with the public keys of both Users
+      Client displays empty conversation
 
     Create a new message - User clicks on "New Message"
+      User is signed in and viewing a conversation
+      User enters message body
+      User clicks "Send"
+      Client creates message {timestamp, User's username, Other User's username, message body}
+      Client creates User decryptable message with User's public key
+      Client creates Other User decryptable message with Other User's public key
+      Client creates request {conversationID, User decryptable message, Other User decryptable message}
+      Client creates signedRequest {S(request, User's private key)} (Get basic encryption/decryption working first...)
+      Client sends request, (signedRequest), username, and session key
+      Server validates request
+      Server stores the User decryptable message and Other User decryptable message separately under the conversation ID
+      User clicks "Refresh"
+      -> View messages in a conversation
 
+    Timeout user account after inactivity
+
+    Display Login or Register on the titlebar (only one at a time)
 
     -Security Requirements
       Sender encrypts and signs message using RSA keys.
@@ -118,12 +160,14 @@ export class LoginRegisterComponent implements OnInit {
 
   onSuccessfulLogin(result) {
     alert('logged in');
+    localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('sessionKey', result['sessionKey']);
-    localStorage.setItem('publicKey', result['publicKey']);
+    localStorage.setItem('publicKey', result['publicKey']);1
     localStorage.setItem('privateKey', this.privateKey);
     localStorage.setItem('username', this.username);
 
     console.log('localStorage:', localStorage);
+    this.router.navigateByUrl('/home').then(() => location.reload());
   }
 
   async register() {
