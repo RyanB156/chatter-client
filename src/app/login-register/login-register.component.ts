@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { handleError } from '../domain/error-handler';
 import { KeyManager } from '../domain/security/key-manager';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login-register',
@@ -97,17 +97,15 @@ export class LoginRegisterComponent implements OnInit {
       (conversation also stores the participants' public keys)
 
     Create a new conversation - User clicks on "New Conversation" and starts communicating with another user
-      User is signed in
-      User clicks on "Home" if not there already
-      User clicks on "New Conversation"
-      Client navigates to CreateNewConversation
-      User enters a recipient username
-      User clicks "Search"
-      Client sends username to Server
-      Server checks if the username matches an existing user. If not, notify Client of the error.
-      Server creates new empty conversation and saves it
-      Server sends empty conversation with the public keys of both Users
-      Client displays empty conversation
+      User is signed in v
+      User clicks on "Home" if not there already v
+      User clicks on "New Conversation" v
+      User enters a recipient username v
+      Client sends username to Server v
+      Server checks if the username matches an existing user. If not, notify Client of the error. v
+      Server creates new empty conversation and saves it v
+      Server sends empty conversation with the public keys of both Users v
+      Client displays empty conversation v
 
     Create a new message - User clicks on "New Message"
       User is signed in and viewing a conversation
@@ -147,7 +145,7 @@ export class LoginRegisterComponent implements OnInit {
     let user = {username: this.username, passwordHash: passwordHash};
     console.log(user);
     this.http.post('https://localhost:1443/users/login', user, {responseType: 'json'})
-              .pipe(catchError(this.handleError(this.loginError)))
+              .pipe(catchError(handleError(this.loginError)))
               .subscribe(result => {
               console.log(`result:`, result);
                 this.onSuccessfulLogin(result);
@@ -179,7 +177,7 @@ export class LoginRegisterComponent implements OnInit {
     let user = {username: this.username, passwordHash: passwordHash, publicKey: this.manager.publicKey};
     console.log(user);
     this.http.post('https://localhost:1443/users/register', user, {responseType: 'text'})
-             .pipe(catchError(this.handleError(this.registerError)))
+             .pipe(catchError(handleError(this.registerError)))
              .subscribe(result => {
                console.log(`result:`, result);
                this.onSuccessfulRegistration(this.manager.privateKey);
@@ -195,9 +193,9 @@ export class LoginRegisterComponent implements OnInit {
    * @param privateKey 
    */
   onSuccessfulRegistration(privateKey) {
-    this.router.navigateByUrl('connect/login');
     this.isLoggingIn = true;
     localStorage.setItem('privateKey', privateKey);
+    this.router.navigateByUrl('connect/login').then(() => location.reload());
   }
 
   createAccount(): void {
@@ -205,20 +203,6 @@ export class LoginRegisterComponent implements OnInit {
     this.isLoggingIn = false;
     this.isLoginError = false;
     this.isRegisterError = false;
-  }
-
-  handleError = callback => function(error) {
-    callback();
-    let errorMessage = '';
-    if (error.error instanceof ErrorEvent) {
-        // client-side error
-        errorMessage = `Error: ${error.error.message}`;
-    } else {
-        // server-side error
-        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-    }
-    console.log(errorMessage);
-    return throwError(errorMessage);
   }
 
 }

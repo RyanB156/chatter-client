@@ -17,6 +17,7 @@ export class ConversationViewComponent implements OnInit {
   messageBody: string = '';
 
   messages: Message[] = [];
+  conversationData: string = '';
 
   buttonClick(): void {
     this.ngOnInit();
@@ -40,13 +41,18 @@ export class ConversationViewComponent implements OnInit {
     this.username = participants[0];
     this.friendUsername = participants[1];
     this.messages = [];
-    this.http.get<Message[]>(`https://localhost:1443/messages/${conversation}`, {observe: 'response'})
+    this.http.get(`https://localhost:1443/messages/${conversation}`, {observe: 'response'})
     .subscribe(response => {
       if (response.status === 200) {
+        
+        /*
         response['body'].forEach(message => {
           message.timestamp = new Date(message['timestamp']);
           this.messages.push(message);
         });
+        */
+       console.log('Received:', response['body']);
+       this.conversationData = JSON.stringify(response['body']);
       }
     }, error => console.log(error));
   }

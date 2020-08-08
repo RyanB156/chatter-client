@@ -15,6 +15,10 @@
   </div>
 </div>
 
+<div>
+  {{ conversationData }}
+</div>
+
 <div class="row msg-canvas justify-content-center mb-2">
   <textarea class="dark" [(ngModel)]="messageBody" rows="4" cols="50"></textarea>
   <button class="dark" (click)="sendMessage()">Send</button>

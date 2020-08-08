@@ -1,15 +1,25 @@
 
 <p>Welcome {{ loginData }}</p>
 
-<div>
-  <button class="dark">New Conversation</button>
+<div *ngIf="!showCreateConversation">
+  <button class="dark" (click)="makeNewConversation()">New Conversation</button>
+</div>
+
+<div *ngIf="showCreateConversation">
+  <label for="username">Username</label>
+  <input class="dark" type="text" id="username" [(ngModel)]="newConversationUsername">
+  <button class="dark" (click)="cancelNewConversation()">Cancel</button>
+  <button class="dark" (click)="sendNewConversation()">Create</button>
+  <div *ngIf="newConversationError">
+    <p class="text-danger">Unable to create conversation. Make sure the username matches an existing user and that the conversation does not already exist.</p>
+  </div>
 </div>
 
 <div>
   Start conversations
   ...<br>
-  <div class="dark" *ngFor="let conversationCode of conversations">
-    <a class="h5" href="/conversation/{{ conversationCode }}">{{ conversationCode }}</a>
+  <div class="dark" *ngFor="let conversationCode of conversations; index as i">
+    <a class="h5" href="/conversation/{{ formatConversation(i) }}">{{ formatConversation(i) }}</a>
   </div>
   <br>
   ...
