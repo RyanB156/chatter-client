@@ -77,22 +77,22 @@ export class LoginRegisterComponent implements OnInit {
     View list of conversations - User navigates to Home and sees a list of conversations for the current user
       User is signed in √
       User clicks on "Home" if not there already √
-      Client submits access request with username and session key
-      Server checks the session key against the username (Don't trust the client saying it is logged in)
-      If logged in, Server admits the request and returns the list of conversations which contains. Else, return error
-      Client displays the conversations to the user
+      Client submits access request with username and session key v
+      Server checks the session key against the username (Don't trust the client saying it is logged in) v
+      If logged in, Server admits the request and returns the list of conversations which contains. Else, return error v
+      Client displays the conversations to the user v
 
     Start view of messages in a conversation - User clicks on an active conversation from Home and sees all messages in that conversation
-      User is signed in and at Home, viewing a list of conversations
-      User clicks on a conversation
+      User is signed in and at Home, viewing a list of conversations v
+      User clicks on a conversation v
       -> View messages in a conversation
       
     View messages in a conversation
-      Client requests all User decryptable messages under the current conversationID
-      Server validates request
-      Server returns all User decryptable messages under the current conversationID
-      Client decrypts all User decryptable messages
-      Client displays messages in a nice format
+      Client requests all User decryptable messages under the current conversationID v
+      Server validates request v
+      Server returns all User decryptable messages under the current conversationID v
+      Client decrypts all User decryptable messages v
+      Client displays messages in a nice format v
 
       (conversation also stores the participants' public keys)
 
@@ -107,19 +107,19 @@ export class LoginRegisterComponent implements OnInit {
       Server sends empty conversation with the public keys of both Users v
       Client displays empty conversation v
 
-    Create a new message - User clicks on "New Message"
-      User is signed in and viewing a conversation
-      User enters message body
-      User clicks "Send"
-      Client creates message {timestamp, User's username, Other User's username, message body}
-      Client creates User decryptable message with User's public key
-      Client creates Other User decryptable message with Other User's public key
-      Client creates request {conversationID, User decryptable message, Other User decryptable message}
-      Client creates signedRequest {S(request, User's private key)} (Get basic encryption/decryption working first...)
-      Client sends request, (signedRequest), username, and session key
-      Server validates request
-      Server stores the User decryptable message and Other User decryptable message separately under the conversation ID
-      User clicks "Refresh"
+    Create a new message -
+      User is signed in and viewing a conversation v
+      User enters message body v
+      User clicks "Send" v
+      Client creates message {timestamp, User's username, Other User's username, message body} v
+      Client creates User decryptable message with User's public key v
+      Client creates Other User decryptable message with Other User's public key v
+      Client creates request {conversationID, User decryptable message, Other User decryptable message} v
+      Client creates signedRequest {S(request, User's private key)} (Get basic encryption/decryption working first...) ___
+      Client sends request, (signedRequest), username, and session key v
+      Server validates requestv
+      Server stores the User decryptable message and Other User decryptable message separately under the conversation ID v
+      User clicks "Refresh" v
       -> View messages in a conversation
 
     Timeout user account after inactivity
@@ -144,7 +144,7 @@ export class LoginRegisterComponent implements OnInit {
     console.log('->', passwordHash);
     let user = {username: this.username, passwordHash: passwordHash};
     console.log(user);
-    this.http.post('https://localhost:1443/users/login', user, {responseType: 'json'})
+    this.http.post('http://localhost:3000/users/login', user, {responseType: 'json'})
               .pipe(catchError(handleError(this.loginError)))
               .subscribe(result => {
               console.log(`result:`, result);
@@ -157,7 +157,6 @@ export class LoginRegisterComponent implements OnInit {
   }
 
   onSuccessfulLogin(result) {
-    alert('logged in');
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('sessionKey', result['sessionKey']);
     localStorage.setItem('publicKey', result['publicKey']);1
@@ -172,15 +171,15 @@ export class LoginRegisterComponent implements OnInit {
     this.isRegisterError = false;
     let passwordHash = await KeyManager.hash(this.password);
     console.log('hash:', passwordHash);
-    await this.manager.generateKeys();
+    let keys = await KeyManager.generateKeys();
 
-    let user = {username: this.username, passwordHash: passwordHash, publicKey: this.manager.publicKey};
+    let user = {username: this.username, passwordHash: passwordHash, publicKey: keys.publicKey};
     console.log(user);
-    this.http.post('https://localhost:1443/users/register', user, {responseType: 'text'})
+    this.http.post('http://localhost:3000/users/register', user, {responseType: 'text'})
              .pipe(catchError(handleError(this.registerError)))
              .subscribe(result => {
                console.log(`result:`, result);
-               this.onSuccessfulRegistration(this.manager.privateKey);
+               this.onSuccessfulRegistration(keys.privateKey);
              });
   }
 

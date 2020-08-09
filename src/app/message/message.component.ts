@@ -7,6 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class MessageComponent implements OnInit {
   @Input() sender: string;
+  @Input() viewer: string;
   @Input() timestamp: Date;
   @Input() body: string;
   constructor() { }
@@ -16,6 +17,7 @@ export class MessageComponent implements OnInit {
 
   formattedDateTime() {
     var hourFormatted;
+    console.log(this.timestamp);
     let hour = this.timestamp.getHours();
     let timeTag = hour < 12 ? 'AM' : 'PM';
 
@@ -39,9 +41,11 @@ export class Message {
   timestamp: Date;
   body: string;
 
-  constructor(sender: string, receiver: string, timestamp: Date, body: string) {
+  constructor(sender: string, senderViewable: string, receiver: string, receiverViewable, timestamp: Date, body) {
     this.sender = sender;
+    this[sender] = senderViewable;
     this.receiver = receiver;
+    this[receiver] = receiverViewable;
     this.timestamp = timestamp;
     this.body = body;
   }

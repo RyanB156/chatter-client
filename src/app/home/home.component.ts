@@ -26,8 +26,8 @@ export class HomeComponent implements OnInit {
     if (localStorage['isLoggedIn'] != 'true') {
       this.router.navigateByUrl('connect/login');
     }
-
-    this.http.get(`https://localhost:1443/conversations/all`, {observe: 'response'})
+    let body = {username: localStorage['username'], sessionKey: localStorage['sessionKey']};
+    this.http.post(`http://localhost:3000/conversations/all`, body, {observe: 'response'})
     .subscribe(response => {
       console.log(response);
       if (response.status === 200) {
@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit {
 
     console.log('Sending', body);
 
-    this.http.post('https://localhost:1443/conversations/add', body, {responseType: 'text'})
+    this.http.post('http://localhost:3000/conversations/add', body, {responseType: 'text'})
             .pipe(catchError(handleError(this.onNewConversationError)))
             .subscribe(result => {
               console.log('result:', result);
@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit {
             })
 
     /*
-      this.http.post('https://localhost:1443/users/register', user, {responseType: 'text'})
+      this.http.post('http://localhost:3000/users/register', user, {responseType: 'text'})
              .pipe(catchError(handleError(this.registerError)))
              .subscribe(result => {
                console.log(`result:`, result);

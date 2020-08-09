@@ -1,5 +1,6 @@
 
 import { Crypt, RSA } from 'hybrid-crypto-js';
+import { Message } from 'src/app/message/message.component';
 const entropy = crypto.getRandomValues(new Uint8Array(256)).toString();
 
 export interface RSAKeyPair {
@@ -9,14 +10,11 @@ export interface RSAKeyPair {
 
 export class KeyManager {
 
-  privateKey;
-  publicKey;
-  crypt;
-  rsa;
+  static crypt = new Crypt({ entropy: entropy, rsaStandard: 'RSA-OAEP', });
+  static rsa = new RSA({ entropy: entropy });
 
   constructor() {
-    this.crypt = new Crypt({ entropy: entropy, rsaStandard: 'RSA-OAEP', });
-    this.rsa = new RSA({ entropy: entropy });
+    
 
     // Select AES or RSA standard
     
@@ -30,11 +28,11 @@ export class KeyManager {
   }
 
 
-  async generateKeys() {
+  static async generateKeys() {
     // Generate 1024 bit RSA key pair
     let publicKey;
     let privateKey;
-    await this.rsa.generateKeyPairAsync().then((keyPair) => {
+    await KeyManager.rsa.generateKeyPairAsync().then((keyPair) => {
       console.log(keyPair);
       // Callback function receives new 1024 bit key pair as a first argument
       publicKey = keyPair.publicKey;
@@ -42,19 +40,18 @@ export class KeyManager {
     
     }, 1024); // Key size
     
-    this.publicKey = publicKey;
-    this.privateKey = privateKey;
+    return {publicKey: publicKey, privateKey: privateKey};
     
   }
 
-  encrypt(publicKey, message) {
-    let ciphertext = this.crypt.encrypt(publicKey, message);
+  static encrypt(plaintext, publicKey) {
+    let ciphertext = KeyManager.crypt.encrypt(publicKey, plaintext);
     console.log(`ciphertext: ${JSON.stringify(ciphertext)}`);
     return ciphertext;
   }
 
-  decrypt(privateKey, ciphertext) {
-    let plaintext = this.crypt.decrypt(privateKey, ciphertext);
+  static decrypt(ciphertext, privateKey) {
+    let plaintext = KeyManager.crypt.decrypt(privateKey, ciphertext);
     console.log(`plaintext: ${JSON.stringify(plaintext)}`);
     return plaintext;
   }
@@ -72,10 +69,15 @@ export class KeyManager {
   static async hash(message): Promise<string> {
     const encoder = new TextEncoder();
     const data = encoder.encode(message);
+    console.log(crypto.subtle);
     const hash = await crypto.subtle.digest('SHA-256', data);
     
     return this.arrayBufferToBase64(hash);
   }
   
+
+  static decryptMessage(ciphertext, privateKey): string {
+    return ciphertext
+  }
 
 }
