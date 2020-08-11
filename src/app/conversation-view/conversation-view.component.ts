@@ -13,10 +13,12 @@ export class ConversationViewComponent implements OnInit {
 
   username: string = '';
   friendUsername: string = '';
+  conversation: string = '';
   messageBody: string = '';
   publicKeys: object;
   messages: any[] = [];
   conversationData: string;
+  lastTimestamp: Date = undefined;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) {}
 
@@ -30,27 +32,36 @@ export class ConversationViewComponent implements OnInit {
 */
 
   ngOnInit(): void {
-    let conversation: string = this.route.snapshot.paramMap.get('conversation');
-    let participants = conversation.split('-');
+    this.conversation = this.route.snapshot.paramMap.get('conversation');
+    let participants = this.conversation.split('-');
     this.username = localStorage['username'];
     this.friendUsername = (this.username === participants[0]) ? participants[1] : participants[0];
-    this.messages = [];
+    
+    this.reload();
+  }
+
+  reload(): void {
     let body = {username: localStorage['username'], sessionKey: localStorage['sessionKey']};
-    this.http.post(`http://localhost:3000/conversations/view?conversationCode=${conversation}`, body, {observe: 'response'})
+    this.http.post(`http://localhost:3000/conversations/view?conversationCode=${this.conversation}&timestamp=${this.lastTimestamp}`, body, {observe: 'response'})
     .subscribe(response => {
       if (response.status === 200) {
         
         console.log('Received:', response['body']);
-        console.log(response['body'][conversation]);
-        this.messages = response['body'][conversation]['messages']
-        this.publicKeys = response['body'][conversation]['publicKeys'];
+        console.log(response['body'][this.conversation]);
+        let newMessages = response['body'][this.conversation]['messages']
+        this.publicKeys = response['body'][this.conversation]['publicKeys'];
 
-        this.messages.forEach(message => {
+        newMessages.forEach(message => {
           message[this.username] = KeyManager.decrypt(message[this.username], localStorage['privateKey'])['message'];
           message['timestamp'] = new Date(message['timestamp']);
           console.log(message);
-          return message;
         });
+
+        this.messages = this.messages.concat(newMessages);
+
+        // Track the timestamp of the last received message to request only new messages.
+        console.log(this.messages);
+        this.lastTimestamp = this.messages[this.messages.length - 1]['timestamp'];
         
       }
     }, error => {
@@ -59,10 +70,6 @@ export class ConversationViewComponent implements OnInit {
         this.router.navigateByUrl('/home');
       }
     });
-  }
-
-  buttonClick(): void {
-    this.ngOnInit();
   }
 
   sendMessage(): void {

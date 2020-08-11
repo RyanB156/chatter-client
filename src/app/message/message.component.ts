@@ -17,7 +17,6 @@ export class MessageComponent implements OnInit {
 
   formattedDateTime() {
     var hourFormatted;
-    console.log(this.timestamp);
     let hour = this.timestamp.getHours();
     let timeTag = hour < 12 ? 'AM' : 'PM';
 
